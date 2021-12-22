@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import id.panicdev.autocompleteplaground.data.AcData
 import id.panicdev.autocompleteplaground.databinding.FragmentFirstBinding
@@ -17,6 +18,7 @@ import kotlinx.coroutines.withContext
 class FirstFragment : Fragment() {
 
     private var _binding: FragmentFirstBinding? = null
+    private val viewModel by viewModels<MainViewModel>()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -52,7 +54,8 @@ class FirstFragment : Fragment() {
                 requireContext(),
                 R.layout.item_dropdown,
                 data.places.toMutableList(),
-                binding.act1
+                binding.act1,
+                binding.textviewFirst
             )
             binding.act1.setAdapter(mAdapter1)
 
@@ -60,7 +63,8 @@ class FirstFragment : Fragment() {
                 requireContext(),
                 R.layout.item_dropdown,
                 data.name.toMutableList(),
-                binding.act2
+                binding.act2,
+                binding.textviewFirst
             )
             binding.act2.setAdapter(mAdapter2)
         }

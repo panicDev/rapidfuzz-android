@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.text.Html
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,6 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import kotlinx.coroutines.runBlocking
-import me.xdrop.fuzzywuzzy.FuzzySearch
 import java.util.*
 
 
@@ -23,7 +21,8 @@ class AutoCompleteAdapter(
     private val mContext: Context,
     @LayoutRes private val layout: Int,
     mList: MutableList<String>,
-    private val mTextView: MaterialAutoCompleteTextView
+    private val mTextView: MaterialAutoCompleteTextView,
+    private val mTextViewParent: TextView,
 ) : ArrayAdapter<String>(mContext, layout, mList) {
 
     var filteredData: List<String> = listOf()
@@ -73,26 +72,14 @@ class AutoCompleteAdapter(
     private val filter = object : Filter() {
         override fun performFiltering(constraint: CharSequence?): FilterResults = runBlocking {
             val filterResults = FilterResults()
+
             if (constraint != null) {
-//                val filteredItem = mutableListOf<String>()
                 val query = constraint.toString().lowercase(Locale.getDefault()).trim { it <= ' ' }
 
-                val filteredItem = mList.asSequence()
-                    .filter {
-                        val score = FuzzySearch.weightedRatio(query, it) { item -> item }
-                        val isTopScore = score >= 75
-                        if (isTopScore) {
-                            Log.i("suggested", "$query Score($score) is in $it ")
-                        }
-                        isTopScore
-                    }
-                    .toList()
-//                val filteredItem = FuzzySearch.extractAll(query, mList, { item -> item }, 85)
-//                    .asSequence()
-//                    .sortedByDescending { it.score }
-//                    .map { it.referent }
-//                    .toList()
 
+                val filteredItem = printDurationMilli("FuzzySearch", "Search $query", mTextViewParent) {
+                    mList.searchFor(query)
+                }
                 filterResults.values = filteredItem
                 filterResults.count = filteredItem.size
             }

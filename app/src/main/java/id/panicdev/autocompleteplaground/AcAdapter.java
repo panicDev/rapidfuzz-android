@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.xdrop.fuzzywuzzy.FuzzySearch;
+import id.panicdev.rapidfuzz.RapidFuzz;
 
 public class AcAdapter extends ArrayAdapter<String> {
 
@@ -89,7 +89,7 @@ public class AcAdapter extends ArrayAdapter<String> {
                 String filterPattern = constraint.toString().toLowerCase().trim();
 //                exResult = FuzzySearch.extractAll(filterPattern, baseList)
                 for (String dish : baseList) {
-                    int ratio = FuzzySearch.partialRatio(filterPattern, dish);
+                    double ratio = RapidFuzz.partialRatio(filterPattern, dish);
                     Log.w("Ratio: ", ratio + " is in: " + dish);
                     if (ratio >= 85) {
                         Log.w("suggested: ", filterPattern + " is in: " + dish);
